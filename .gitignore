@@ -1,4 +1,14 @@
 /www/bitrix/*
 /www/upload/*
 /www/vendor/*
+
 .env
+
+# --- System & IDE ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.sublime-project
+*.local
+*.log

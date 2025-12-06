@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="local/php_interface/tests_bootstrap.php"
+         colors="true"
+         backupGlobals="false">
+    <testsuites>
+        <testsuite name="Local">
+            <directory>local/tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

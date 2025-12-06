@@ -6,8 +6,32 @@
             "name": "fesero"
         }
     ],
+    "scripts": {
+        "analyse": "phpstan analyse --memory-limit=2G",
+        "fix": "php-cs-fixer fix",
+        "test": "phpunit",
+        "phpinsights": "phpinsights",
+        "check": [
+            "@fix",
+            "@analyse",
+            "@test"
+        ]
+    },
     "minimum-stability": "stable",
     "require": {
-        "symfony/var-dumper": "^8.0"
+        "symfony/var-dumper": "^8.0",
+        "andreyryabin/sprint.migration": "^5.6"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "friendsofphp/php-cs-fixer": "^3.91",
+        "phpunit/phpunit": "^12.5",
+        "nunomaduro/phpinsights": "^2.13"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "composer/installers": true
+        }
     }
 }
