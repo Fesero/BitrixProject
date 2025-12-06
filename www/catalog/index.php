@@ -4,7 +4,7 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 ?>
 <?$APPLICATION->IncludeComponent("bitrix:catalog", "bootstrap_v4", array(
 	"IBLOCK_TYPE" => "catalog",
-	"IBLOCK_ID" => "#CATALOG_IBLOCK_ID#",
+	"IBLOCK_ID" => "2",
 	"TEMPLATE_THEME" => "site",
 	"HIDE_NOT_AVAILABLE" => "N",
 	"BASKET_URL" => "/personal/cart/",

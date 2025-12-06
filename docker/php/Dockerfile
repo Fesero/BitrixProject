@@ -22,6 +22,8 @@ RUN apt-get update && apt-get install -y \
     msmtp \
     && rm -rf /var/lib/apt/lists/*
 
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
 
 WORKDIR /var/www/html
