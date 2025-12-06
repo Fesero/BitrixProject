@@ -1,0 +1,3 @@
+/www/bitrix/*
+/www/upload/*
+.env
