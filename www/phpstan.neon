@@ -1,0 +1,19 @@
+parameters:
+    level: 9
+    
+    paths:
+        - local/
+
+    bootstrapFiles:
+        - local/php_interface/phpstan_bootstrap.php
+
+    scanFiles:
+        - local/php_interface/phpstan_globals.php
+
+    scanDirectories:
+        - bitrix/modules
+        
+    excludePaths:
+        - bitrix/*
+        - vendor/*
+        - cache/*
