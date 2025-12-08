@@ -10,6 +10,11 @@ $news = ElementNewsTable::getList([
     'select' => ['ID', 'NAME'],
 ])->fetchAll();
 
+global $APPLICATION;
+$APPLICATION->IncludeComponent(
+    "local:api.news.list", "", []
+);
+
 ?>
 
 <ul>
