@@ -17,6 +17,11 @@
             "@test"
         ]
     },
+    "autoload": {
+        "psr-4": {
+            "Local\\": "local/classes/Local/"
+        }
+    },
     "minimum-stability": "stable",
     "require": {
         "symfony/var-dumper": "^8.0",
