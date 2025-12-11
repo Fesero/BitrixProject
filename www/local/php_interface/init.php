@@ -15,3 +15,9 @@ $eventManager->addEventHandler(
     'OnAfterIBlockElementAdd',
     ['Local\Events\LogsElementAdd', 'handleNews'],
 );
+
+$eventManager->addEventHandler(
+    'local',
+    'OnAfterRequestAdd',
+    [Local\Events\RequestEventHandler::class, 'onAdd']
+);

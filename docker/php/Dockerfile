@@ -13,7 +13,8 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
     sockets \
     intl \
     xdebug \
-    memcached
+    memcached \
+    redis
 
 RUN apt-get update && apt-get install -y \
     mc \

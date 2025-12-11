@@ -12,6 +12,7 @@ services:
     depends_on:
       - mysql
       - memcached
+      - redis
     networks:
       - bitrix-net
 
@@ -57,9 +58,20 @@ services:
     networks:
       - bitrix-net
 
+  redis:
+    image: redis:alpine
+    container_name: ${COMPOSE_PROJECT_NAME}_redis
+    restart: always
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - bitrix-net
+
 networks:
   bitrix-net:
     driver: bridge
 
 volumes:
   db_data:
+  redis_data:
