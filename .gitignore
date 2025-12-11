@@ -2,6 +2,8 @@
 /www/upload/*
 /www/vendor/*
 
+!/bitrix/.settings_extra.php
+
 .env
 
 # --- System & IDE ---
