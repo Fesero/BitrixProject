@@ -6,7 +6,9 @@ use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Engine\ActionFilter;
 use Bitrix\Main\DI\ServiceLocator;
 use Bitrix\Main\Error;
+
 use Local\DTO\RequestDTO;
+use Local\Service\RequestService;
 
 class RequestController extends Controller
 {
@@ -36,7 +38,7 @@ class RequestController extends Controller
         }
 
         try {
-            $service = ServiceLocator::getInstance()->get('RequestService');
+            $service = ServiceLocator::getInstance()->get(RequestService::class);
 
             $id = $service->createRequest(new RequestDTO(
                 $data['name'] ?? '',

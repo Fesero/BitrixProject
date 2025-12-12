@@ -6,23 +6,21 @@ namespace Local\Service;
 
 use Local\Model\RequestTable;
 use Local\DTO\RequestDTO;
+use Local\Repository\RequestRepositoryInterface;
+
 use Bitrix\Main\Event;
 
 class RequestService
 {
+    public function __construct(
+        private readonly RequestRepositoryInterface $repository
+    ) {
+
+    }
+
     public function createRequest(RequestDTO $requestDTO): int
     {
-        $result = RequestTable::add([
-            'USER_NAME' => $requestDTO->name,
-            'PHONE' => $requestDTO->phone,
-            'COMMENT' => $requestDTO->comment ?? '',
-        ]);
-
-        if (!$result->isSuccess()) {
-            throw new \Exception(implode(', ', $result->getErrorMessages()));
-        }
-
-        $id = $result->getId();
+        $id = $this->repository->save($requestDTO);
 
         $event = new Event(
             'local',
@@ -36,5 +34,16 @@ class RequestService
         $event->send();
 
         return $id;
+    }
+
+    public function getRequestInfo(int $id): array
+    {
+        $data = $this->repository->findById($id);
+        
+        if ($data === null) {
+             throw new \RuntimeException("Заявка #$id не найдена");
+        }
+        
+        return $data;
     }
 }
