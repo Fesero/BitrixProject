@@ -1,13 +1,16 @@
 <?php
-if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 
-use \Bitrix\Main\Loader;
-use \Bitrix\Main\Localization\Loc;
-use \Bitrix\Iblock\Elements\ElementNewsTable;
+if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
+    die();
+}
+
+use Bitrix\Main\Loader;
+use Bitrix\Iblock\Elements\ElementNewsTable;
 
 class ApiNewsList extends \CBitrixComponent
 {
-    public function executeComponent() {
+    public function executeComponent()
+    {
         if (!Loader::includeModule('iblock')) {
             ShowError("Модуль Информационных блоков не установлен");
             return;
@@ -18,7 +21,7 @@ class ApiNewsList extends \CBitrixComponent
             return;
         }
 
-        $cacheTime = $this->arParams['CACHE_TIME'] ?? 3600; 
+        $cacheTime = $this->arParams['CACHE_TIME'] ?? 3600;
         $cacheId = 'api_news_list_v1';
         $cachePath = $this->getCachePath();
 

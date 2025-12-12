@@ -2,7 +2,7 @@
 <?php
 
 define('NO_KEEP_STATISTIC', true);
-define('NOT_CHECK_PERMISSIONS',true);
+define('NOT_CHECK_PERMISSIONS', true);
 define('CHK_EVENT', true);
 
 $_SERVER["DOCUMENT_ROOT"] = realpath(__DIR__ . '/../../');
@@ -24,7 +24,7 @@ echo "========================================\n";
 [$bus, $transport] = BusFactory::create();
 
 $worker = new Worker(
-    ['default' => $transport], 
+    ['default' => $transport],
     $bus
 );
 

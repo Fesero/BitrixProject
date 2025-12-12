@@ -41,7 +41,7 @@ class RequestTable extends DataManager
                 ->configureTitle('Комментарий'),
 
             (new Fields\DatetimeField('CREATED_AT'))
-                ->configureDefaultValue(function() {
+                ->configureDefaultValue(function () {
                     return new DateTime();
                 })
                 ->configureTitle('Дата создания'),

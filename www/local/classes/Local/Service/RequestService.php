@@ -1,7 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Local\Service;
+
 use Local\Model\RequestTable;
 use Local\DTO\RequestDTO;
 use Bitrix\Main\Event;
@@ -15,7 +17,7 @@ class RequestService
             'PHONE' => $requestDTO->phone,
             'COMMENT' => $requestDTO->comment ?? '',
         ]);
-        
+
         if (!$result->isSuccess()) {
             throw new \Exception(implode(', ', $result->getErrorMessages()));
         }
@@ -32,7 +34,7 @@ class RequestService
         );
 
         $event->send();
-        
+
         return $id;
     }
 }

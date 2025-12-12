@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Local\Service;
@@ -25,32 +26,35 @@ class BusFactory
         $transportFactory = new RedisTransportFactory();
 
         $transport = $transportFactory->createTransport(
-            self::REDIS_DSN, 
+            self::REDIS_DSN,
             ['stream' => 'messages'],
             $serializer
         );
 
-        $container = new class($transport) implements ContainerInterface {
+        $container = new class ($transport) implements ContainerInterface {
             private object $transport;
 
-            public function __construct(object $transport) {
+            public function __construct(object $transport)
+            {
                 $this->transport = $transport;
             }
 
-            public function get(string $id) {
+            public function get(string $id)
+            {
                 if ($id === 'redis_transport') {
                     return $this->transport;
                 }
-                throw new class extends \Exception implements NotFoundExceptionInterface {};
+                throw new class () extends \Exception implements NotFoundExceptionInterface {};
             }
 
-            public function has(string $id): bool {
+            public function has(string $id): bool
+            {
                 return $id === 'redis_transport';
             }
         };
 
         $sendersLocator = new SendersLocator([
-            SendWebhook::class => ['redis_transport'], 
+            SendWebhook::class => ['redis_transport'],
         ], $container);
 
         $handlersLocator = new HandlersLocator([
@@ -58,7 +62,7 @@ class BusFactory
         ]);
 
         $middleware = [
-            new SendMessageMiddleware($sendersLocator), 
+            new SendMessageMiddleware($sendersLocator),
 
             new HandleMessageMiddleware($handlersLocator),
         ];

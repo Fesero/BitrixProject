@@ -12,13 +12,15 @@ $news = ElementNewsTable::getList([
 
 global $APPLICATION;
 $APPLICATION->IncludeComponent(
-    "local:api.news.list", "", []
+    "local:api.news.list",
+    "",
+    []
 );
 
 ?>
 
 <ul>
-<?
+<?php
 foreach ($news as $newsItem) {
     echo "<li>ID: {$newsItem['ID']}, Name: {$newsItem['NAME']}</li>";
 }

@@ -8,8 +8,11 @@ use Bitrix\Main\Type\DateTime;
 
 class NewsAgent
 {
-    public static function deactivateOldNews() {
-        if (!Loader::IncludeModule('iblock')) return;
+    public static function deactivateOldNews()
+    {
+        if (!Loader::IncludeModule('iblock')) {
+            return;
+        }
 
         $date = new DateTime();
         $date->add('-30 day');

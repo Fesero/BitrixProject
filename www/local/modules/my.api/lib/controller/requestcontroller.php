@@ -1,4 +1,5 @@
 <?php
+
 namespace My\Api\Controller;
 
 use Bitrix\Main\Engine\Controller;

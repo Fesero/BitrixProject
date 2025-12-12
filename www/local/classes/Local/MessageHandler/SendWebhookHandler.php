@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Local\MessageHandler;
 
 use Local\Message\SendWebhook;
 use Local\Service\NotificationService;
-use Bitrix\Main\Loader;
 use Local\Model\RequestTable;
 
 class SendWebhookHandler
