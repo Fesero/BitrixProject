@@ -24,6 +24,12 @@ class RequestController extends Controller
                     ActionFilter\Authentication::class,
                 ],
             ],
+            'list' => [
+                '-prefilters' => [
+                    ActionFilter\Csrf::class,
+                    ActionFilter\Authentication::class,
+                ],
+            ],
         ];
     }
 
@@ -50,6 +56,25 @@ class RequestController extends Controller
                 'status' => 'success',
                 'id' => $id
             ];
+        } catch (\Exception $e) {
+            $this->addError(new Error($e->getMessage()));
+
+            return null;
+        }
+    }
+
+    public function listAction()
+    {
+        try {
+            $service = ServiceLocator::getInstance()->get(RequestService::class);
+
+            $list = $service->getAll();
+
+            return [
+                'status' => 'success',
+                'data' => $list
+            ];
+
         } catch (\Exception $e) {
             $this->addError(new Error($e->getMessage()));
 

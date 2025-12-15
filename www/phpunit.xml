@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="local/php_interface/tests_bootstrap.php"
-         colors="true"
-         backupGlobals="false">
+<phpunit bootstrap="vendor/autoload.php" colors="true">
     <testsuites>
-        <testsuite name="Local">
-            <directory>local/tests</directory>
+        <testsuite name="Unit">
+            <directory>local/tests/Unit</directory>
         </testsuite>
     </testsuites>
 </phpunit>

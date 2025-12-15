@@ -38,4 +38,41 @@ class RequestRepository implements RequestRepositoryInterface
             return null;
         }
     }
+
+    public function getAll(): ?array
+    {
+        $queryResult = RequestTable::getList([
+            'select' => [
+                'ID',
+                'USER_NAME',
+                'USER_ID',
+                'USER_LOGIN' => 'MY_USER.LOGIN',
+                'USER_EMAIL' => 'MY_USER.EMAIL'
+            ],
+            'order' => ['ID' => 'DESC'],
+        ]);
+
+        $result = [];
+
+        while ($row = $queryResult->fetch()) {
+            
+            $item = [
+                'id' => (int)$row['ID'],
+                'user_name' => $row['USER_NAME'],
+                'auth_info' => null,
+            ];
+
+            if ((int)$row['USER_ID'] > 0) {
+                $item['auth_info'] = [
+                    'id'    => (int)$row['USER_ID'],
+                    'login' => $row['USER_LOGIN'],
+                    'email' => $row['USER_EMAIL'],
+                ];
+            }
+
+            $result[] = $item;
+        }
+
+        return $result;
+    }
 }

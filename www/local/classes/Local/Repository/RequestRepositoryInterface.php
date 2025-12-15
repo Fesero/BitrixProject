@@ -21,4 +21,11 @@ interface RequestRepositoryInterface
      * @return array|null
      */
     public function findById(int $id): ?array;
+
+    /**
+     * Получение всех заявок
+     *
+     * @return array|null
+     */
+    public function getAll(): ?array;
 }

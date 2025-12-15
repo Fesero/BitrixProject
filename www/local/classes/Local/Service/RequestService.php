@@ -7,13 +7,15 @@ namespace Local\Service;
 use Local\Model\RequestTable;
 use Local\DTO\RequestDTO;
 use Local\Repository\RequestRepositoryInterface;
+use Local\Service\Event\EventDispatcherInterface;
 
 use Bitrix\Main\Event;
 
 class RequestService
 {
     public function __construct(
-        private readonly RequestRepositoryInterface $repository
+        private readonly RequestRepositoryInterface $repository,
+        private readonly EventDispatcherInterface $eventDispatcher
     ) {
 
     }
@@ -22,7 +24,7 @@ class RequestService
     {
         $id = $this->repository->save($requestDTO);
 
-        $event = new Event(
+        $this->eventDispatcher->send(
             'local',
             'OnAfterRequestAdd',
             [
@@ -30,8 +32,6 @@ class RequestService
                 'fields' => $requestDTO
             ]
         );
-
-        $event->send();
 
         return $id;
     }
@@ -45,5 +45,12 @@ class RequestService
         }
         
         return $data;
+    }
+
+    public function getAll(): ?array
+    {
+        $data = $this->repository->getAll();
+
+        return $data ?? [];
     }
 }

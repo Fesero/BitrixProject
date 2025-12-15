@@ -8,4 +8,5 @@ return function (RoutingConfigurator $routes) {
         return new \Bitrix\Main\Engine\Response\Json(['status' => 'Router works!']);
     });
     $routes->post('/api/v1/request/add', [RequestController::class, 'addAction']);
+    $routes->get('/api/v1/request/list', [RequestController::class, 'listAction']);
 };
