@@ -14,3 +14,7 @@ Thumbs.db
 *.sublime-project
 *.local
 *.log
+
+node_modules
+
+dist
