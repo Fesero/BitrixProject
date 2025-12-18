@@ -2,7 +2,6 @@
 
 namespace Local\Events;
 
-use Bitrix\Main\EventManager;
 use Bitrix\Main\Diag\FileLogger;
 use Bitrix\Main\Application;
 
@@ -10,7 +9,8 @@ const NEWS_IBLOCK_ID = 1;
 
 class LogsElementAdd
 {
-    public static function handleNews(&$fields) {
+    public static function handleNews(&$fields)
+    {
         if (empty($fields['ID'])) {
             return;
         }
@@ -30,7 +30,7 @@ class LogsElementAdd
         $logger = new FileLogger($fullPath);
 
         $date = date('Y-m-d H:i:s');
-        
+
         $message = sprintf(
             "[%s] Добавлена новость: %s (ID: %d)" . PHP_EOL,
             $date,

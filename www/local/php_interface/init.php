@@ -5,8 +5,6 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php')) {
 }
 
 use Bitrix\Main\EventManager;
-use Bitrix\Main\Diag\FileLogger;
-use Bitrix\Main\Application;
 
 $eventManager = EventManager::getInstance();
 

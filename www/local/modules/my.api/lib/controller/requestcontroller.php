@@ -1,11 +1,14 @@
 <?php
+
 namespace My\Api\Controller;
 
 use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Engine\ActionFilter;
 use Bitrix\Main\DI\ServiceLocator;
 use Bitrix\Main\Error;
+
 use Local\DTO\RequestDTO;
+use Local\Service\RequestService;
 
 class RequestController extends Controller
 {
@@ -16,6 +19,12 @@ class RequestController extends Controller
     {
         return [
             'add' => [
+                '-prefilters' => [
+                    ActionFilter\Csrf::class,
+                    ActionFilter\Authentication::class,
+                ],
+            ],
+            'list' => [
                 '-prefilters' => [
                     ActionFilter\Csrf::class,
                     ActionFilter\Authentication::class,
@@ -35,7 +44,7 @@ class RequestController extends Controller
         }
 
         try {
-            $service = ServiceLocator::getInstance()->get('RequestService');
+            $service = ServiceLocator::getInstance()->get(RequestService::class);
 
             $id = $service->createRequest(new RequestDTO(
                 $data['name'] ?? '',
@@ -47,6 +56,25 @@ class RequestController extends Controller
                 'status' => 'success',
                 'id' => $id
             ];
+        } catch (\Exception $e) {
+            $this->addError(new Error($e->getMessage()));
+
+            return null;
+        }
+    }
+
+    public function listAction()
+    {
+        try {
+            $service = ServiceLocator::getInstance()->get(RequestService::class);
+
+            $list = $service->getAll();
+
+            return [
+                'status' => 'success',
+                'data' => $list
+            ];
+
         } catch (\Exception $e) {
             $this->addError(new Error($e->getMessage()));
 

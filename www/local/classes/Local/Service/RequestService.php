@@ -1,28 +1,30 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Local\Service;
+
 use Local\Model\RequestTable;
 use Local\DTO\RequestDTO;
+use Local\Repository\RequestRepositoryInterface;
+use Local\Service\Event\EventDispatcherInterface;
+
 use Bitrix\Main\Event;
 
 class RequestService
 {
+    public function __construct(
+        private readonly RequestRepositoryInterface $repository,
+        private readonly EventDispatcherInterface $eventDispatcher
+    ) {
+
+    }
+
     public function createRequest(RequestDTO $requestDTO): int
     {
-        $result = RequestTable::add([
-            'USER_NAME' => $requestDTO->name,
-            'PHONE' => $requestDTO->phone,
-            'COMMENT' => $requestDTO->comment ?? '',
-        ]);
-        
-        if (!$result->isSuccess()) {
-            throw new \Exception(implode(', ', $result->getErrorMessages()));
-        }
+        $id = $this->repository->save($requestDTO);
 
-        $id = $result->getId();
-
-        $event = new Event(
+        $this->eventDispatcher->send(
             'local',
             'OnAfterRequestAdd',
             [
@@ -31,8 +33,24 @@ class RequestService
             ]
         );
 
-        $event->send();
-        
         return $id;
+    }
+
+    public function getRequestInfo(int $id): array
+    {
+        $data = $this->repository->findById($id);
+        
+        if ($data === null) {
+             throw new \RuntimeException("Заявка #$id не найдена");
+        }
+        
+        return $data;
+    }
+
+    public function getAll(): ?array
+    {
+        $data = $this->repository->getAll();
+
+        return $data ?? [];
     }
 }

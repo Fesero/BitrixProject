@@ -4,7 +4,6 @@ namespace Sprint\Migration;
 
 use Local\Model\RequestTable;
 use Bitrix\Main\Application;
-use Bitrix\Main\Entity\Base;
 
 class HighLoadTable20251209212051 extends Version
 {
@@ -23,7 +22,7 @@ class HighLoadTable20251209212051 extends Version
 
         if (!$connection->isTableExists($tableName)) {
             RequestTable::getEntity()->createDbTable();
-            
+
             $this->outSuccess("Таблица {$tableName} успешно создана через ORM.");
         } else {
             $this->out("Таблица {$tableName} уже существует.");

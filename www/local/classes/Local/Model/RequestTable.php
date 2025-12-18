@@ -4,6 +4,9 @@ namespace Local\Model;
 
 use Bitrix\Main\ORM\Data\DataManager;
 use Bitrix\Main\ORM\Fields;
+use Bitrix\Main\ORM\Fields\Relations\Reference;
+use Bitrix\Main\ORM\Query\Join;
+use Bitrix\Main\UserTable;
 use Bitrix\Main\ORM\Fields\Validators\RegExpValidator;
 use Bitrix\Main\Type\DateTime;
 use Bitrix\Main\Localization\Loc;
@@ -25,6 +28,16 @@ class RequestTable extends DataManager
                 ->configureAutocomplete(true)
                 ->configureTitle('ID'),
 
+            (new Fields\IntegerField('USER_ID'))
+                ->configureNullable(true)
+                ->configureTitle('ID Пользователя'),
+
+            (new Reference(
+                    'MY_USER',
+                    UserTable::class,
+                    Join::on('this.USER_ID', 'ref.ID')
+                ))->configureJoinType(Join::TYPE_LEFT),
+
             (new Fields\StringField('USER_NAME'))
                 ->configureRequired(true)
                 ->configureTitle('Имя пользователя'),
@@ -41,7 +54,7 @@ class RequestTable extends DataManager
                 ->configureTitle('Комментарий'),
 
             (new Fields\DatetimeField('CREATED_AT'))
-                ->configureDefaultValue(function() {
+                ->configureDefaultValue(function () {
                     return new DateTime();
                 })
                 ->configureTitle('Дата создания'),

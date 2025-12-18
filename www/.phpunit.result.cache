@@ -1,1 +1,1 @@
-{"version":2,"defects":{"ExampleTest::testUserAdminExists":7},"times":{"ExampleTest::testBitrixIsLoaded":0.001,"ExampleTest::testUserAdminExists":0.066}}
+{"version":2,"defects":{"ExampleTest::testUserAdminExists":7,"RequestServiceTest::testCreateRequestSavesDataAndReturnsId":7},"times":{"ExampleTest::testBitrixIsLoaded":0.008,"ExampleTest::testUserAdminExists":0.011,"RequestServiceTest::testCreateRequestSavesDataAndReturnsId":0.002}}

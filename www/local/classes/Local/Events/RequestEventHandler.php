@@ -1,12 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Local\Events;
 
 use Bitrix\Main\Event;
-use Bitrix\Main\Diag\FileLogger;
-use Bitrix\Main\Application;
-use Local\Service\NotificationService;
 use Local\Message\SendWebhook;
 use Local\Service\BusFactory;
 

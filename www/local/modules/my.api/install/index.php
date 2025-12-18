@@ -1,5 +1,5 @@
 <?php
-use Bitrix\Main\Localization\Loc;
+
 use Bitrix\Main\ModuleManager;
 
 class my_api extends CModule
