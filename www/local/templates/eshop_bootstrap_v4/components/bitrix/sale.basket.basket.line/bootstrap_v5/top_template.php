@@ -18,10 +18,8 @@ $initialData = [
 ];
 
 ?>
-<div class="basket-line">
-	<div 
-		id="basket-widget-root" 
-		data-component="basket-widget" 
-		data-initial='<?= \Bitrix\Main\Web\Json::encode($initialData) ?>'
-	></div>
-</div>
+<div 
+	id="basket-widget-root" 
+	data-component="basket-widget" 
+	data-initial='<?= \Bitrix\Main\Web\Json::encode($initialData) ?>'
+></div>
