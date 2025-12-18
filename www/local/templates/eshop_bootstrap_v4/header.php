@@ -3,15 +3,6 @@ IncludeTemplateLangFile($_SERVER["DOCUMENT_ROOT"]."/bitrix/templates/".SITE_TEMP
 CJSCore::Init(array("fx"));
 
 \Bitrix\Main\UI\Extension::load(["ui.bootstrap4", "ui.fonts.opensans"]);
-\Bitrix\Main\UI\Extension::load("fesero.basket");
-
-\Bitrix\Main\Loader::includeModule('sale');
-
-$basket = Bitrix\Sale\Basket::loadItemsForFuser(\Bitrix\Sale\Fuser::getId(), Bitrix\Main\Context::getCurrent()->getSite());
-$initialData = [
-    'totalPrice' => $basket->getPrice(),
-    'totalCount' => count($basket->getQuantityList()),
-];
 
 if (isset($_GET["theme"]) && in_array($_GET["theme"], array("blue", "green", "yellow", "red")))
 {
@@ -32,12 +23,6 @@ $curPage = $APPLICATION->GetCurPage(true);
 </head>
 <body class="bx-background-image bx-theme-<?=$theme?>" <?$APPLICATION->ShowProperty("backgroundImage");?>>
 <div id="panel"><? $APPLICATION->ShowPanel(); ?></div>
-
-<div 
-    id="basket-widget-root" 
-    data-component="basket-widget" 
-    data-initial='<?= \Bitrix\Main\Web\Json::encode($initialData) ?>'
-></div>
 
 <?$APPLICATION->IncludeComponent(
 	"bitrix:eshop.banner",
@@ -75,24 +60,20 @@ $curPage = $APPLICATION->GetCurPage(true);
 				</div>
 
 				<div class="col-auto d-none d-md-block bx-header-personal">
-					<?$APPLICATION->IncludeComponent(
-						"bitrix:sale.basket.basket.line",
-						"bootstrap_v4",
-						array(
-							"PATH_TO_BASKET" => SITE_DIR."personal/cart/",
-							"PATH_TO_PERSONAL" => SITE_DIR."personal/",
-							"SHOW_PERSONAL_LINK" => "N",
-							"SHOW_NUM_PRODUCTS" => "Y",
-							"SHOW_TOTAL_PRICE" => "Y",
-							"SHOW_PRODUCTS" => "N",
-							"POSITION_FIXED" =>"N",
-							"SHOW_AUTHOR" => "Y",
-							"PATH_TO_REGISTER" => SITE_DIR."login/",
-							"PATH_TO_PROFILE" => SITE_DIR."personal/"
-						),
-						false,
-						array()
-					);?>
+					<?$APPLICATION->IncludeComponent("bitrix:sale.basket.basket.line", "bootstrap_v5", Array(
+	"PATH_TO_BASKET" => SITE_DIR."personal/cart/",	// Страница корзины
+		"PATH_TO_PERSONAL" => SITE_DIR."personal/",	// Страница персонального раздела
+		"SHOW_PERSONAL_LINK" => "N",	// Отображать персональный раздел
+		"SHOW_NUM_PRODUCTS" => "Y",	// Показывать количество товаров
+		"SHOW_TOTAL_PRICE" => "Y",	// Показывать общую сумму по товарам
+		"SHOW_PRODUCTS" => "N",	// Показывать список товаров
+		"POSITION_FIXED" => "N",	// Отображать корзину поверх шаблона
+		"SHOW_AUTHOR" => "Y",	// Добавить возможность авторизации
+		"PATH_TO_REGISTER" => SITE_DIR."login/",	// Страница регистрации
+		"PATH_TO_PROFILE" => SITE_DIR."personal/",	// Страница профиля
+	),
+	false
+);?>
 				</div>
 
 				<div class="col bx-header-contact">

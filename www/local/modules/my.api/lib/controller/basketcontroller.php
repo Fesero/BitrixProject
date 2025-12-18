@@ -50,7 +50,7 @@ class Basketcontroller extends Controller
             return null;
         }
 
-        return $result->getData();
+        return $result->getData()['basket'];
     }
 
     public function getAction()
@@ -62,7 +62,8 @@ class Basketcontroller extends Controller
             $this->addErrors($result->getErrors());
             return null;
         }
-        return $result->getData();
+
+        return $result->getData()['basket'];
     }
 
     public function updateAction(int $productId, float $quantity)
@@ -74,7 +75,8 @@ class Basketcontroller extends Controller
             $this->addErrors($result->getErrors());
             return null;
         }
-        return $result->getData();
+
+        return $result->getData()['basket'];
     }
 
     public function deleteAction(int $productId)
@@ -86,6 +88,7 @@ class Basketcontroller extends Controller
             $this->addErrors($result->getErrors());
             return null;
         }
-        return $result->getData();
+        
+        return $result->getData()['basket'];
     }
 }

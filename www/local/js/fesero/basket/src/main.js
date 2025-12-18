@@ -25,7 +25,6 @@ class AppManager {
                 console.error('JSON Parse Error', e);
             }
 
-            // Магия Vue 3
             const app = createApp(Component, { initialConfig: props });
             app.use(pinia);
             app.mount(el);

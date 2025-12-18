@@ -1,205 +1,229 @@
 <template>
-  <div class="fesero-basket-widget" :class="{ 'loading': store.isLoading }">
-    <!-- Header -->
-    <div class="header">
-      <div class="title">
-        <h3>🛒 Корзина</h3>
-        <span v-if="store.isSyncing" class="sync-badge">Обновление...</span>
+  <div class="bx-basket-wrapper" v-click-outside="closeBasket">
+    <!-- Кнопка-триггер: только она влияет на размер шапки -->
+    <div class="bx-basket-trigger" @click="toggleBasket" :class="{ 'is-active': isOpen }">
+      <div class="trigger-icon">
+        <span class="badge" v-if="store.totalCount > 0">{{ store.totalCount }}</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
       </div>
-      <div class="stats">
-        <div class="total-price">{{ formatPrice(store.totalPrice) }}</div>
-        <div class="total-count">{{ store.totalCount }} шт.</div>
+      <div class="trigger-text">
+        <span class="label">Корзина</span>
+        <span class="value">{{ formatPrice(store.totalPrice) }}</span>
       </div>
     </div>
 
-    <!-- Error Alert -->
-    <div v-if="store.error" class="error-alert">
-      {{ store.error }}
-      <button @click="store.error = null">✕</button>
-    </div>
+    <!-- Выпадающая панель: Position Absolute -->
+    <transition name="dropdown-anime">
+      <div v-if="isOpen" class="bx-basket-dropdown">
+        <header class="dropdown-header">
+          <span>Ваши товары ({{ store.totalCount }})</span>
+          <button @click="isOpen = false" class="close-flyout">&times;</button>
+        </header>
 
-    <!-- Empty State -->
-    <div v-if="!store.hasItems && !store.isLoading" class="empty-state">
-      Корзина пуста
-    </div>
-
-    <!-- Items List -->
-    <div class="items-list" v-else>
-      <div 
-        v-for="item in store.items" 
-        :key="item.id" 
-        class="basket-item"
-      >
-        <div class="item-info">
-          <div class="item-name">{{ item.name }}</div>
-          <div class="item-price">{{ formatPrice(item.price) }} / шт.</div>
-        </div>
-
-        <div class="item-controls">
-          <div class="qty-changer">
-            <button 
-                @click="store.updateQuantity(item.id, item.quantity - 1)"
-                :disabled="item.quantity <= 1"
-            >-</button>
-            <input 
-                type="number" 
-                :value="item.quantity" 
-                readonly
-            >
-            <button 
-                @click="store.updateQuantity(item.id, item.quantity + 1)"
-            >+</button>
+        <div class="dropdown-scroll-area">
+          <div v-if="!store.hasItems" class="empty-state">
+            <p>Корзина пуста</p>
           </div>
           
-          <button 
-            class="btn-delete" 
-            @click="store.removeItem(item.id)"
-            title="Удалить"
-          >
-             &times;
-          </button>
+          <div v-for="item in store.items" :key="item.id" class="mini-item">
+            <img :src="item.image" class="mini-img">
+            <div class="mini-info">
+              <div class="mini-name">{{ item.name }}</div>
+              <div class="mini-meta">
+                <span class="mini-qty">{{ item.quantity }} x</span>
+                <span class="mini-price">{{ formatPrice(item.price) }}</span>
+              </div>
+            </div>
+            <button @click="store.removeItem(item.id)" class="mini-remove">×</button>
+          </div>
         </div>
+
+        <footer class="dropdown-footer">
+          <div class="total-row">
+            <span>Итого:</span>
+            <strong>{{ formatPrice(store.totalPrice) }}</strong>
+          </div>
+          <a href="/personal/cart" class="btn-go-to-cart">Перейти в корзину</a>
+          <button class="btn-checkout-fast">Быстрый заказ</button>
+        </footer>
       </div>
-    </div>
-    
-    <!-- Footer / Debug (Optional) -->
-    <div class="footer">
-         <small>System Level 22 Active</small>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-import { useBasketStore } from './stores/basket';
-
-const props = defineProps({
-  initialConfig: Object
-});
-
-const store = useBasketStore();
-
-// Форматтер валюты (Intl API)
-const formatPrice = (value) => {
-    return new Intl.NumberFormat('ru-RU', {
-        style: 'currency',
-        currency: 'RUB',
-        maximumFractionDigits: 0
-    }).format(value);
-};
-
-onMounted(() => {
-  // Если данные пришли из PHP при инициализации (initialConfig), применяем их сразу,
-  // чтобы избежать лишнего запроса get().
-  if (props.initialConfig && props.initialConfig.items) {
-      store.applyServerData(props.initialConfig);
-  } else {
-      store.fetchBasket();
-  }
-});
-</script>
+  import { ref } from 'vue';
+  import { useBasketStore } from './stores/basket';
+  
+  const store = useBasketStore();
+  store.fetchBasket();
+  const isOpen = ref(false);
+  
+  const toggleBasket = () => {
+    isOpen.value = !isOpen.value;
+  };
+  
+  const closeBasket = () => {
+    isOpen.value = false;
+  };
+  
+  const vClickOutside = {
+    mounted(el, binding) {
+      el.clickOutsideEvent = (event) => {
+        if (!(el === event.target || el.contains(event.target))) {
+          binding.value();
+        }
+      };
+      document.addEventListener('click', el.clickOutsideEvent);
+    },
+    unmounted(el) {
+      document.removeEventListener('click', el.clickOutsideEvent);
+    }
+  };
+  
+  const formatPrice = (v) => new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(v);
+  </script>
 
 <style scoped>
-.fesero-basket-widget {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  width: 320px;
-  font-family: 'Open Sans', sans-serif;
-  overflow: hidden;
-  border: 1px solid #eef2f4;
-}
-
-.header {
-  padding: 15px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.header h3 { margin: 0; font-size: 16px; color: #333; }
-.sync-badge { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; animation: pulse 1s infinite; }
-
-.stats { text-align: right; }
-.total-price { font-weight: bold; color: #28a745; font-size: 16px; }
-.total-count { font-size: 12px; color: #666; }
-
-.items-list {
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.basket-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 15px;
-  border-bottom: 1px solid #f0f0f0;
-  transition: background 0.2s;
-}
-
-.basket-item:hover { background: #fafafa; }
-
-.item-info { flex: 1; padding-right: 10px; }
-.item-name { font-size: 13px; font-weight: 600; line-height: 1.2; margin-bottom: 4px; color: #444; }
-.item-price { font-size: 12px; color: #888; }
-
-.item-controls { display: flex; align-items: center; gap: 8px; }
-
-.qty-changer {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.qty-changer button {
-  border: none;
-  background: none;
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  color: #555;
-  font-weight: bold;
-}
-.qty-changer button:hover { background: #eee; }
-.qty-changer button:disabled { color: #ccc; cursor: default; }
-
-.qty-changer input {
-  width: 30px;
-  text-align: center;
-  border: none;
-  border-left: 1px solid #ddd;
-  border-right: 1px solid #ddd;
-  font-size: 12px;
-  height: 24px;
-  padding: 0;
-  -moz-appearance: textfield;
-}
-
-.btn-delete {
-  background: none;
-  border: none;
-  color: #dc3545;
-  font-size: 18px;
-  cursor: pointer;
-  padding: 0 4px;
-  opacity: 0.6;
-}
-.btn-delete:hover { opacity: 1; }
-
-.error-alert {
-  background: #ffebee;
-  color: #c62828;
-  padding: 10px;
-  font-size: 12px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.empty-state { padding: 30px; text-align: center; color: #999; }
-
-@keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-</style>
+  .bx-basket-wrapper {
+    position: relative; /* Критично для позиционирования выпадашки */
+    display: inline-block;
+    font-family: 'Open Sans', sans-serif;
+  }
+  
+  /* Триггер - компактная кнопка в шапке */
+  .bx-basket-trigger {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    background: #f8f9fa;
+    border-radius: 50px;
+    border: 1px solid #e1e4e8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+  
+  .bx-basket-trigger:hover {
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-color: #2fc6f6;
+  }
+  
+  .trigger-icon {
+    position: relative;
+    color: #2fc6f6;
+  }
+  
+  .badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ff4d4f;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: bold;
+    border: 2px solid #fff;
+  }
+  
+  .trigger-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+  
+  .trigger-text .label { font-size: 11px; color: #828b95; }
+  .trigger-text .value { font-size: 14px; font-weight: 700; color: #333c47; }
+  
+  /* Выпадающая панель - не ломает верстку! */
+  .bx-basket-dropdown {
+    position: absolute;
+    top: calc(100% + 15px);
+    right: 0;
+    width: 320px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    border: 1px solid #eef2f4;
+    z-index: 9999; /* Поверх всего */
+    overflow: hidden;
+    transform-origin: top right;
+  }
+  
+  /* Анимация */
+  .dropdown-anime-enter-active, .dropdown-anime-leave-active {
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+  .dropdown-anime-enter-from, .dropdown-anime-leave-to {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  
+  .dropdown-header {
+    padding: 15px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  
+  .dropdown-scroll-area {
+    max-height: 350px;
+    overflow-y: auto;
+  }
+  
+  .mini-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    gap: 12px;
+    border-bottom: 1px solid #f5f7f8;
+  }
+  
+  .mini-img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; background: #eee; }
+  .mini-info { flex: 1; }
+  .mini-name { font-size: 13px; color: #333; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .mini-meta { font-size: 12px; color: #828b95; }
+  .mini-price { font-weight: 700; color: #333; margin-left: 5px; }
+  
+  .mini-remove { background: none; border: none; color: #ccc; cursor: pointer; font-size: 18px; }
+  .mini-remove:hover { color: #ff4d4f; }
+  
+  .dropdown-footer {
+    padding: 15px;
+    border-top: 2px solid #f0f3f5;
+    background: #fff;
+  }
+  
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
+  
+  .btn-go-to-cart, .btn-checkout-fast {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  
+  .btn-go-to-cart { background: #f0f3f5; color: #333c47; }
+  .btn-checkout-fast { background: #2fc6f6; color: #fff; border: none; cursor: pointer; }
+  .btn-checkout-fast:hover { background: #1eb5e5; }
+  </style>

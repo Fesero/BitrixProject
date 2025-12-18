@@ -3,14 +3,12 @@ import { basketApi } from '../api';
 
 export const useBasketStore = defineStore('basket', {
     state: () => ({
-        items: [], // Массив объектов
+        items: [],
         totalPrice: 0,
         totalCount: 0,
         isLoading: false,
-        isSyncing: false, // Флаг фоновой синхронизации
+        isSyncing: false,
         error: null,
-        
-        // Хранилище таймеров для debounce: Map<itemId, timeoutId>
         _debounceTimers: new Map(), 
     }),
 
@@ -19,7 +17,6 @@ export const useBasketStore = defineStore('basket', {
     },
 
     actions: {
-        // Инициализация (первая загрузка)
         async fetchBasket() {
             this.isLoading = true;
             try {
@@ -33,7 +30,6 @@ export const useBasketStore = defineStore('basket', {
             }
         },
 
-        // Применение данных от сервера (DRY - Don't Repeat Yourself)
         applyServerData(data) {
             this.items = data.items || [];
             this.totalPrice = data.totalPrice;
@@ -43,8 +39,6 @@ export const useBasketStore = defineStore('basket', {
         async addToBasket(productId) {
             this.isSyncing = true;
             try {
-                // Тут оптимистично добавить сложно, так как мы не знаем ID записи корзины заранее.
-                // Поэтому просто спиннер или ждем.
                 const data = await basketApi.add(productId, 1);
                 this.applyServerData(data);
             } catch (err) {
@@ -55,35 +49,27 @@ export const useBasketStore = defineStore('basket', {
         },
 
         async removeItem(basketItemId) {
-            // 1. Optimistic Update: Удаляем из UI мгновенно
-            const originalItems = [...this.items]; // бэкап на случай ошибки
+            const originalItems = [...this.items];
             this.items = this.items.filter(item => item.id !== basketItemId);
             
             try {
                 const data = await basketApi.delete(basketItemId);
                 this.applyServerData(data);
             } catch (err) {
-                this.items = originalItems; // Rollback
+                this.items = originalItems;
                 this.error = "Не удалось удалить товар";
                 console.error(err);
             }
         },
 
-        // DEBOUNCED UPDATE
         updateQuantity(basketItemId, newQuantity) {
-            // 0. Валидация
             if (newQuantity < 1) return; 
 
-            // 1. Находим товар локально
             const item = this.items.find(i => i.id === basketItemId);
             if (!item) return;
 
-            // 2. Optimistic Update UI
             item.quantity = newQuantity;
-            // Можно пересчитать локально total, но точная цена с скидками известна только серверу.
-            // Для простоты оставим пока старый total, он обновится после ответа.
 
-            // 3. Debounce Logic
             if (this._debounceTimers.has(basketItemId)) {
                 clearTimeout(this._debounceTimers.get(basketItemId));
             }
@@ -95,12 +81,11 @@ export const useBasketStore = defineStore('basket', {
                     this.applyServerData(data);
                 } catch (err) {
                     console.error(err);
-                    // Тут можно сделать rollback или показать уведомление
                 } finally {
                     this.isSyncing = false;
                     this._debounceTimers.delete(basketItemId);
                 }
-            }, 600); // 600ms задержка
+            }, 600);
 
             this._debounceTimers.set(basketItemId, timeoutId);
         }
