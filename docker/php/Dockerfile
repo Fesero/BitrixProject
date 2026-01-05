@@ -12,7 +12,7 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
     soap \
     sockets \
     intl \
-    xdebug \
+    #xdebug \
     memcached \
     redis
 

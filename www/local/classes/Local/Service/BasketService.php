@@ -9,11 +9,14 @@ use Bitrix\Sale;
 use Bitrix\Main\Error;
 use Bitrix\Main\Result;
 
+use Exception;
 use Local\Transformer\BasketTransformer;
 
 Loader::includeModule('sale');
 Loader::includeModule('catalog');
 
+
+# TODO repository!!!
 class BasketService
 {
     private BasketTransformer $basketTransformer;
@@ -54,7 +57,7 @@ class BasketService
 
             return $this->processResult($basket);
 
-        } catch (\Exception  $e) {
+        } catch (Exception  $e) {
             $result->addError(new Error($e->getMessage()));
         }
 

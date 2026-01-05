@@ -22,7 +22,7 @@ class RequestRepository implements RequestRepositoryInterface
         ]);
 
         if (!$result->isSuccess()) {
-            throw new \Exception(implode(', ', $result->getErrorMessages()));
+            throw new Exception(implode(', ', $result->getErrorMessages()));
         }
 
         return $result->getId();
