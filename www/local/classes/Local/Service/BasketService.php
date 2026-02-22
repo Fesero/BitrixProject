@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Local\Service;
@@ -8,7 +9,6 @@ use Bitrix\Main\Loader;
 use Bitrix\Sale;
 use Bitrix\Main\Error;
 use Bitrix\Main\Result;
-
 use Exception;
 use Local\Transformer\BasketTransformer;
 
@@ -21,7 +21,8 @@ class BasketService
 {
     private BasketTransformer $basketTransformer;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->basketTransformer = new BasketTransformer();
     }
 
@@ -111,25 +112,25 @@ class BasketService
                 return $result;
             }
         }
-        
+
         return $this->processResult($basket);
     }
 
-    private function getBasketEntity(): Sale\BasketBase
+    private function getBasketEntity(): Sale\Basket
     {
         $fUserId = Sale\Fuser::getId();
         $siteId = Context::getCurrent()->getSite();
         return Sale\Basket::loadItemsForFUser($fUserId, $siteId);
     }
 
-    private function processResult(Sale\BasketBase $basket): Result
+    private function processResult(Sale\Basket $basket): Result
     {
         $result = new Result();
-        
+
         $dto = $this->basketTransformer->transform($basket);
-        
+
         $result->setData(['basket' => $dto]);
-        
+
         return $result;
     }
 }

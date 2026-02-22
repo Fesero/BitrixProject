@@ -9,6 +9,10 @@ class NotificationService
 {
     private const WEBHOOK_URL = 'https://webhook.site/c472902a-e2ce-4878-9cbd-72d1c98a22ae';
 
+    /**
+     * @param array<string, mixed> $payload
+     * @return bool
+     */
     public function sendWebhook(array $payload): bool
     {
         $httpClient = new HttpClient([
@@ -19,6 +23,9 @@ class NotificationService
         $httpClient->setHeader('Content-Type', 'application/json');
 
         try {
+            /**
+             * @var array<string, mixed>|string|resource|null
+             */
             $jsonData = Json::encode($payload);
 
             $result = $httpClient->post(self::WEBHOOK_URL, $jsonData);

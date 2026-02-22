@@ -10,7 +10,7 @@ use Local\Service\BusFactory;
 
 class RequestEventHandler
 {
-    public static function onAdd(Event $event)
+    public static function onAdd(Event $event): void
     {
         $arParams = $event->getParameters();
         $id = $arParams['id'] ?? 0;

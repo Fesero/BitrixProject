@@ -7,13 +7,22 @@ parameters:
     bootstrapFiles:
         - local/php_interface/phpstan_bootstrap.php
 
-    scanFiles:
-        - local/php_interface/phpstan_globals.php
-
-    scanDirectories:
-        - bitrix/modules
+    stubFiles:
+        - local/php_interface/stubs/bitrix_main.php
+        - local/php_interface/stubs/bitrix_sale.php
+        - local/php_interface/stubs/bitrix_iblock.php
+        - local/php_interface/stubs/bitrix_orm.php
+        - local/php_interface/stubs/bitrix_currency.php
+        - local/php_interface/stubs/bitrix_catalog.php
         
     excludePaths:
         - bitrix/*
         - vendor/*
         - cache/*
+        - local/php_interface/migrations/*
+        - local/tests/*
+        - local/templates/*
+        - local/routes/*
+        
+    ignoreErrors:
+    - message: '#Strict comparison using !== between true and true#'

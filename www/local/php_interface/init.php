@@ -1,7 +1,11 @@
 <?php
 
-if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php')) {
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
+/**
+ * @var string $docRoot
+ */
+$docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
+if ($docRoot !== '' && file_exists("$docRoot/vendor/autoload.php")) {
+    require_once "$docRoot/vendor/autoload.php";
 }
 
 use Bitrix\Main\EventManager;
