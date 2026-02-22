@@ -10,7 +10,7 @@ use Local\Model\RequestTable;
 
 class SendWebhookHandler
 {
-    public function __invoke(SendWebhook $message)
+    public function __invoke(SendWebhook $message): void
     {
         echo sprintf("[%s] Processing Webhook for Request ID: %d ... ", date('H:i:s'), $message->requestId);
 

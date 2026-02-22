@@ -15,12 +15,16 @@ Loc::loadMessages(__FILE__);
 
 class RequestTable extends DataManager
 {
-    public static function getTableName()
+    public static function getTableName(): string
     {
         return 'local_requests';
     }
 
-    public static function getMap()
+    /**
+     * Summary of getMap
+     * @return array<Fields\DatetimeField|Fields\IntegerField|Fields\Relations\Reference|Fields\ScalarField|Fields\StringField>
+     */
+    public static function getMap(): array
     {
         return [
             (new Fields\IntegerField('ID'))
@@ -33,10 +37,10 @@ class RequestTable extends DataManager
                 ->configureTitle('ID Пользователя'),
 
             (new Reference(
-                    'MY_USER',
-                    UserTable::class,
-                    Join::on('this.USER_ID', 'ref.ID')
-                ))->configureJoinType(Join::TYPE_LEFT),
+                'MY_USER',
+                UserTable::class,
+                Join::on('this.USER_ID', 'ref.ID')
+            ))->configureJoinType(Join::TYPE_LEFT),
 
             (new Fields\StringField('USER_NAME'))
                 ->configureRequired(true)

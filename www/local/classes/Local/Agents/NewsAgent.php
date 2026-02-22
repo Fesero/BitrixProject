@@ -8,10 +8,10 @@ use Bitrix\Main\Type\DateTime;
 
 class NewsAgent
 {
-    public static function deactivateOldNews()
+    public static function deactivateOldNews(): string|null
     {
         if (!Loader::IncludeModule('iblock')) {
-            return;
+            return null;
         }
 
         $date = new DateTime();
@@ -26,6 +26,7 @@ class NewsAgent
             ]);
 
         while ($item = $news->fetchObject()) {
+            /** @var \Bitrix\Iblock\Elements\ElementNews $item */
             $item->setActive('N');
 
             $result = $item->save();

@@ -13,12 +13,17 @@ use Symfony\Component\Messenger\Middleware\SendMessageMiddleware;
 use Symfony\Component\Messenger\Transport\Serialization\PhpSerializer;
 use Symfony\Component\Messenger\Transport\Sender\SendersLocator;
 use Symfony\Component\Messenger\Bridge\Redis\Transport\RedisTransportFactory;
+use Symfony\Component\Messenger\Transport\TransportInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class BusFactory
 {
     private const REDIS_DSN = 'redis://redis:6379/messages';
 
+    /**
+     * @return array{0: MessageBus, 1: TransportInterface}
+     */
     public static function create(): array
     {
         $serializer = new PhpSerializer();

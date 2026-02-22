@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace My\Api\Controller;
@@ -6,12 +7,15 @@ namespace My\Api\Controller;
 use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Engine\ActionFilter;
 use Bitrix\Main\Error;
-
 use Local\Service\BasketService;
 
 class BasketController extends Controller
 {
-    public function configureActions()
+    /**
+     * Summary of configureActions
+     * @return array<string, array<string, array<ActionFilter\HttpMethod|string>>>
+     */
+    public function configureActions(): array
     {
         $prefilters = [
             'prefilters' => [
@@ -34,7 +38,7 @@ class BasketController extends Controller
         ];
     }
 
-    public function addAction(int $productId, int $quantity = 0)
+    public function addAction(int $productId, int $quantity = 0): mixed
     {
         if ($productId <= 0 || $quantity <= 0) {
             $this->addError(new Error('WRONG PARAMS', 'INVALID_PARAMS'));
@@ -53,7 +57,7 @@ class BasketController extends Controller
         return $result->getData()['basket'];
     }
 
-    public function getAction()
+    public function getAction(): mixed
     {
         $service = new BasketService();
         $result = $service->getBasketData();
@@ -66,7 +70,7 @@ class BasketController extends Controller
         return $result->getData()['basket'];
     }
 
-    public function updateAction(int $productId, float $quantity)
+    public function updateAction(int $productId, float $quantity): mixed
     {
         $service = new BasketService();
         $result = $service->updateItemQuantity($productId, $quantity);
@@ -79,7 +83,7 @@ class BasketController extends Controller
         return $result->getData()['basket'];
     }
 
-    public function deleteAction(int $productId)
+    public function deleteAction(int $productId): mixed
     {
         $service = new BasketService();
         $result = $service->deleteItem($productId);
@@ -88,7 +92,7 @@ class BasketController extends Controller
             $this->addErrors($result->getErrors());
             return null;
         }
-        
+
         return $result->getData()['basket'];
     }
 }

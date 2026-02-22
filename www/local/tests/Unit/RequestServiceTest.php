@@ -1,4 +1,4 @@
-<?
+<?php
 
 use PHPUnit\Framework\TestCase;
 use Local\Service\RequestService;
@@ -8,7 +8,7 @@ use Local\DTO\RequestDTO;
 
 class RequestServiceTest extends TestCase
 {
-    public function testCreateRequestSavesDataAndReturnsId()
+    public function testCreateRequestSavesDataAndReturnsId(): void
     {
         $dto = new RequestDTO('Test User', '79001112233', 'Comment');
 
@@ -27,7 +27,7 @@ class RequestServiceTest extends TestCase
                 'id' => 555,
                 'fields' => $dto
             ]
-            );
+        );
 
         $service = new RequestService($repositoryMock, $eventDispatcherMock);
 

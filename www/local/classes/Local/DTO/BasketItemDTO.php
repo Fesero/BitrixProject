@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Local\DTO;
@@ -16,8 +17,13 @@ readonly class BasketItemDTO implements \JsonSerializable
         public int $quantity,
         public ?string $image = null,
         public string $detailUrl = ''
-    ) {}
+    ) {
+    }
 
+    /**
+     * Summary of jsonSerialize
+     * @return array{detailUrl: string, formattedPrice: string, formattedSum: string, id: int, image: string|null, name: string, price: float, productId: int, quantity: int, sum: float}
+     */
     public function jsonSerialize(): array
     {
         return [

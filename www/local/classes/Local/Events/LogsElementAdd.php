@@ -9,7 +9,12 @@ const NEWS_IBLOCK_ID = 1;
 
 class LogsElementAdd
 {
-    public static function handleNews(&$fields)
+    /**
+     * Summary of handleNews
+     * @param array<string, int|string> $fields
+     * @return void
+     */
+    public static function handleNews(array &$fields): void
     {
         if (empty($fields['ID'])) {
             return;

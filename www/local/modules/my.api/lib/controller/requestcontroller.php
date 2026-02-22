@@ -6,7 +6,6 @@ use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Engine\ActionFilter;
 use Bitrix\Main\DI\ServiceLocator;
 use Bitrix\Main\Error;
-
 use Local\DTO\RequestDTO;
 use Local\Service\RequestService;
 
@@ -14,8 +13,9 @@ class RequestController extends Controller
 {
     /**
      * Настраиваем префильтры (защиту)
+     * @return array<string, array<string, array<string>>>
      */
-    public function configureActions()
+    public function configureActions(): array
     {
         return [
             'add' => [
@@ -33,7 +33,11 @@ class RequestController extends Controller
         ];
     }
 
-    public function addAction()
+    /**
+     * Summary of addAction
+     * @return array{id: mixed, status: string|null}
+     */
+    public function addAction(): array|null
     {
         $request = $this->getRequest();
 
@@ -44,7 +48,7 @@ class RequestController extends Controller
         }
 
         try {
-            $service = ServiceLocator::getInstance()->get(RequestService::class);
+            $service = $this->getRequestService();
 
             $id = $service->createRequest(new RequestDTO(
                 $data['name'] ?? '',
@@ -63,10 +67,14 @@ class RequestController extends Controller
         }
     }
 
-    public function listAction()
+    /**
+     * Summary of listAction
+     * @return array{data: mixed, status: string|null}
+     */
+    public function listAction(): array|null
     {
         try {
-            $service = ServiceLocator::getInstance()->get(RequestService::class);
+            $service = $this->getRequestService();
 
             $list = $service->getAll();
 
@@ -80,5 +88,16 @@ class RequestController extends Controller
 
             return null;
         }
+    }
+
+    private function getRequestService(): RequestService
+    {
+        $service = ServiceLocator::getInstance()->get(RequestService::class);
+
+        if (!$service instanceof RequestService) {
+            throw new \RuntimeException('RequestService not found in ServiceLocator');
+        }
+
+        return $service;
     }
 }

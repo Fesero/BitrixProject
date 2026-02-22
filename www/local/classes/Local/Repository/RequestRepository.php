@@ -4,28 +4,32 @@ namespace Local\Repository;
 
 use Local\Model\RequestTable;
 use Local\DTO\RequestDTO;
-
 use Bitrix\Main\ArgumentException;
 use Bitrix\Main\ObjectPropertyException;
 use Bitrix\Main\SystemException;
-use Bitrix\Main\Event;
 use Exception;
 
 class RequestRepository implements RequestRepositoryInterface
 {
-    public function save(RequestDTO $requestDTO): int
+    public function save(RequestDTO $requestDTO): int|null
     {
         $result = RequestTable::add([
             'USER_NAME' => $requestDTO->name,
             'PHONE' => $requestDTO->phone,
-            'COMMENT' => $requestDTO->comment . ' from repository' ?? '',
+            'COMMENT' => ($requestDTO->comment ?? '') . ' from repository',
         ]);
 
         if (!$result->isSuccess()) {
             throw new Exception(implode(', ', $result->getErrorMessages()));
         }
 
-        return $result->getId();
+        $id = $result->getId();
+
+        if (\is_int($id)) {
+            return $id;
+        } else {
+            return null;
+        }
     }
 
     public function findById(int $id): ?array
@@ -39,6 +43,10 @@ class RequestRepository implements RequestRepositoryInterface
         }
     }
 
+    /**
+     * Summary of getAll
+     * @return array<array<string, mixed>>|null
+     */
     public function getAll(): ?array
     {
         $queryResult = RequestTable::getList([
@@ -55,22 +63,27 @@ class RequestRepository implements RequestRepositoryInterface
         $result = [];
 
         while ($row = $queryResult->fetch()) {
-            
-            $item = [
-                'id' => (int)$row['ID'],
-                'user_name' => $row['USER_NAME'],
-                'auth_info' => null,
-            ];
+            /**
+             * @var array<string, array<string|int, mixed>|bool|int|string|null> $row
+             */
 
-            if ((int)$row['USER_ID'] > 0) {
-                $item['auth_info'] = [
-                    'id'    => (int)$row['USER_ID'],
-                    'login' => $row['USER_LOGIN'],
-                    'email' => $row['USER_EMAIL'],
+            if (\intval($row['ID']) > 0) {
+                $item = [
+                    'id' => \intval($row['ID']),
+                    'user_name' => $row['USER_NAME'],
+                    'auth_info' => null,
                 ];
-            }
 
-            $result[] = $item;
+                if (\intval($row['USER_ID']) > 0) {
+                    $item['auth_info'] = [
+                        'id'    => \intval($row['USER_ID']),
+                        'login' => $row['USER_LOGIN'],
+                        'email' => $row['USER_EMAIL'],
+                    ];
+                }
+
+                $result[] = $item;
+            }
         }
 
         return $result;

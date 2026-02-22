@@ -1,0 +1,20 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": ["local/classes"],
+        "excludes": ["local/classes/Local/Agents"]
+    },
+    "mutators": {
+        "@default": true
+    },
+    "testFramework": "phpunit",
+    "testFrameworkOptions": "",
+    "minMsi": 60,
+    "minCoveredMsi": 75,
+    "logs": {
+        "text": "local/tests/infection.log",
+        "html": "local/tests/infection.html",
+        "summary": "local/tests/infection-summary.log"
+    },
+    "tmpDir": "/tmp"
+}

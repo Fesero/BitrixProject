@@ -1,4 +1,5 @@
-<?
+<?php
+
 $MESS["TSB1_PERSONAL"] = "Personal Section";
 $MESS["TSB1_EXPAND"] = "Expand";
 $MESS["TSB1_COLLAPSE"] = "Hide";
@@ -15,4 +16,3 @@ $MESS["TSB1_2ORDER"] = "Check out";
 $MESS["TSB1_LOGIN"] = "Log In";
 $MESS["TSB1_LOGOUT"] = "Log Out";
 $MESS["TSB1_REGISTER"] = "Register";
-?>

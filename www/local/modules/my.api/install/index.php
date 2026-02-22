@@ -4,10 +4,19 @@ use Bitrix\Main\ModuleManager;
 
 class my_api extends CModule
 {
+    /** @var string */
     public $MODULE_ID = 'my.api';
+
+    /** @var string */
     public $MODULE_VERSION;
+
+    /** @var string */
     public $MODULE_VERSION_DATE;
+
+    /** @var string */
     public $MODULE_NAME;
+
+    /** @var string */
     public $MODULE_DESCRIPTION;
 
     public function __construct()
@@ -18,12 +27,12 @@ class my_api extends CModule
         $this->MODULE_DESCRIPTION = "Модуль для REST API контроллеров";
     }
 
-    public function DoInstall()
+    public function DoInstall(): void
     {
         ModuleManager::registerModule($this->MODULE_ID);
     }
 
-    public function DoUninstall()
+    public function DoUninstall(): void
     {
         ModuleManager::unRegisterModule($this->MODULE_ID);
     }

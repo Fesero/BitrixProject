@@ -17,4 +17,14 @@ Thumbs.db
 
 node_modules
 
-dist
+www/local/tests/coverage/
+
+www/.phpunit.cache/
+www/.php-cs-fixer.cache
+www/.phpunit.result.cache
+
+www/fix_update.php
+
+www/local/tests/infection.log
+www/local/tests/infection.html
+www/local/tests/infection-summary.log
