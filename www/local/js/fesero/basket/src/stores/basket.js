@@ -1,6 +1,14 @@
 import { defineStore } from 'pinia';
 import { basketApi } from '../api';
 
+const debounce = (fn, ms) => {
+    let timeout;
+    return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => fn(...args), ms);
+    };
+};
+
 export const useBasketStore = defineStore('basket', {
     state: () => ({
         items: [],
@@ -18,6 +26,7 @@ export const useBasketStore = defineStore('basket', {
 
     actions: {
         async fetchBasket() {
+            if (this.isLoading) return;
             this.isLoading = true;
             try {
                 const data = await basketApi.get();
@@ -34,6 +43,8 @@ export const useBasketStore = defineStore('basket', {
             this.items = data.items || [];
             this.totalPrice = data.totalPrice;
             this.totalCount = data.totalCount;
+
+            this.notifyOtherTabs();
         },
 
         async addToBasket(productId) {
@@ -88,6 +99,33 @@ export const useBasketStore = defineStore('basket', {
             }, 600);
 
             this._debounceTimers.set(basketItemId, timeoutId);
+        },
+
+        initGlobalListeners() {
+            const debouncedFetch = debounce(() => {
+                console.log('[BasketStore] Sync triggered by external event');
+                this.fetchBasket();
+            }, 150);
+
+            if (typeof window.BX !== 'undefined') {
+                window.BX.addCustomEvent('OnBasketChange', () => {
+                    debouncedFetch();
+                });
+                
+                window.BX.addCustomEvent(window, 'OnBasketChange', () => {
+                    debouncedFetch();
+                });
+            }
+
+            window.addEventListener('storage', (event) => {
+                if (event.key === 'app_basket_updated_timestamp') {
+                    debouncedFetch();
+                }
+            });
+        },
+
+        notifyOtherTabs() {
+            localStorage.setItem('app_basket_updated_timestamp', Date.now().toString());
         }
     }
 });

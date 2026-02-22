@@ -9,7 +9,7 @@ use Bitrix\Main\Error;
 
 use Local\Service\BasketService;
 
-class Basketcontroller extends Controller
+class BasketController extends Controller
 {
     public function configureActions()
     {

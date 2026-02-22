@@ -1,43 +1,25 @@
-<?if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
+<?if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED!==true) die();
 /**
- * @global string $componentPath
- * @global string $templateName
- * @var CBitrixComponentTemplate $this
+ * @global array $arParams
+ * @global CUser $USER
+ * @global CMain $APPLICATION
+ * @global string $cartId
  */
-$cartStyle = 'bx-basket';
-$cartId = "bx_basket".$this->randString();
-$arParams['cartId'] = $cartId;
+$compositeStub = (isset($arResult['COMPOSITE_STUB']) && $arResult['COMPOSITE_STUB'] == 'Y');
 
-if ($arParams['POSITION_FIXED'] == 'Y')
-{
-	$cartStyle .= "-fixed {$arParams['POSITION_HORIZONTAL']} {$arParams['POSITION_VERTICAL']}";
-	if ($arParams['SHOW_PRODUCTS'] == 'Y')
-		$cartStyle .= ' bx-closed';
-}
-else
-{
-	$cartStyle .= ' bx-opener';
-}
-?><script>
-var <?=$cartId?> = new BitrixSmallCart;
-</script>
-<div id="<?=$cartId?>" class="<?=$cartStyle?>"><?
-	/** @var \Bitrix\Main\Page\FrameBuffered $frame */
-	$frame = $this->createFrame($cartId, false)->begin();
-		require(realpath(__DIR__).'/ajax_template.php');
-	$frame->beginStub();
-		$arResult['COMPOSITE_STUB'] = 'Y';
-		require(realpath(__DIR__).'/top_template.php');
-		unset($arResult['COMPOSITE_STUB']);
-	$frame->end();
-?></div>
-<script>
-	<?=$cartId?>.siteId       = '<?=SITE_ID?>';
-	<?=$cartId?>.cartId       = '<?=$cartId?>';
-	<?=$cartId?>.ajaxPath     = '<?=$componentPath?>/ajax.php';
-	<?=$cartId?>.templateName = '<?=$templateName?>';
-	<?=$cartId?>.arParams     =  <?=CUtil::PhpToJSObject ($arParams)?>; // TODO \Bitrix\Main\Web\Json::encode
-	<?=$cartId?>.closeMessage = '<?=GetMessage('TSB1_COLLAPSE')?>';
-	<?=$cartId?>.openMessage  = '<?=GetMessage('TSB1_EXPAND')?>';
-	<?=$cartId?>.activate();
-</script>
+\Bitrix\Main\UI\Extension::load("fesero.basket");
+
+\Bitrix\Main\Loader::includeModule('sale');
+
+$basket = Bitrix\Sale\Basket::loadItemsForFuser(\Bitrix\Sale\Fuser::getId(), Bitrix\Main\Context::getCurrent()->getSite());
+$initialData = [
+    'totalPrice' => $basket->getPrice(),
+    'totalCount' => count($basket->getQuantityList()),
+];
+
+?>
+<div 
+	id="basket-widget-root" 
+	data-component="basket-widget" 
+	data-initial='<?= \Bitrix\Main\Web\Json::encode($initialData) ?>'
+></div>

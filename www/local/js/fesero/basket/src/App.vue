@@ -60,7 +60,11 @@
   import { useBasketStore } from './stores/basket';
   
   const store = useBasketStore();
+
   store.fetchBasket();
+
+  store.initGlobalListeners();
+
   const isOpen = ref(false);
   
   const toggleBasket = () => {
