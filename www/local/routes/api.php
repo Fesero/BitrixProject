@@ -3,6 +3,7 @@
 use Bitrix\Main\Routing\RoutingConfigurator;
 use My\Api\Controller\RequestController;
 use My\Api\Controller\Basketcontroller;
+use My\Api\Controller\OrderController;
 
 return function (RoutingConfigurator $routes) {
     $routes->any('/api/test', function () {
@@ -15,4 +16,6 @@ return function (RoutingConfigurator $routes) {
     $routes->post('/api/v1/basket/update/{productId}/{quantity}', [Basketcontroller::class, 'updateAction']);
     $routes->post('/api/v1/basket/delete/{productId}', [Basketcontroller::class, 'deleteAction']);
     $routes->get('/api/v1/basket/get', [Basketcontroller::class, 'getAction']);
+
+    $routes->post('/api/v1/order/create', [OrderController::class, 'createAction']);
 };
