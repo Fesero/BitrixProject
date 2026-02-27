@@ -9,7 +9,7 @@
     "scripts": {
         "analyse": "phpstan analyse --memory-limit=2G",
         "fix": "php-cs-fixer fix",
-        "test": "phpunit",
+        "test": "phpunit --testdox",
         "coverage": "phpunit --coverage-html local/tests/coverage",
         "phpins": "phpinsights analyse local/classes",
         "mutate": "infection --threads=4 --show-mutations",
