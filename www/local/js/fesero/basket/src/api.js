@@ -40,3 +40,38 @@ export const basketApi = {
         return this.request('delete', { 'productId': productId });
     }
 }
+
+export const orderApi = {
+    /**
+     * @param {Object} dto - данные заказа
+     * @param {number} dto.personTypeId - тип покупателя (1 = физлицо)
+     * @param {number} dto.deliveryServiceId   - ID службы доставки
+     * @param {number} dto.paySystemId  - ID платёжной системы
+     * @param {Object} dto.properties   - свойства заказа (NAME, EMAIL, PHONE, ADDRESS)
+     */
+    async create(dto) {
+        const url = '/api/v1/order/create';
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify(dto),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+
+        if (result.status === 'error') {
+            const message = result.errors?.[0]?.message || 'Ошибка создания заказа';
+            throw new Error(message);
+        }
+
+        return result.data;
+    }
+};

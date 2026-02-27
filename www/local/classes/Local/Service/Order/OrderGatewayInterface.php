@@ -9,5 +9,5 @@ use Local\DTO\OrderCreateDTO;
 
 interface OrderGatewayInterface
 {
-    public function createFromBasket(OrderCreateDTO $dto): Result;
+    public function createFromBasket(OrderCreateDTO $dto, int $userId, string $siteId): Result;
 }

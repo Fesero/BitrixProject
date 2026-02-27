@@ -12,8 +12,6 @@ class OrderServiceTest extends TestCase
     private function createValidDto(): OrderCreateDTO
     {
         return new OrderCreateDTO(
-            userId: 10,
-            siteId: 's1',
             personTypeId: 1,
             deliveryServiceId: 2,
             paySystemId: 3,
@@ -59,7 +57,7 @@ class OrderServiceTest extends TestCase
 
         $service = new OrderService($gatewayMock, $eventDispatcherMock);
 
-        $result = $service->createFromBasket($dto);
+        $result = $service->createFromBasket($dto, 10, 's1');
 
         $this->assertTrue($result->isSuccess());
         $this->assertSame(123, $result->getData()['orderId']);
@@ -86,7 +84,7 @@ class OrderServiceTest extends TestCase
 
         $service = new OrderService($gatewayMock, $eventDispatcherMock);
 
-        $result = $service->createFromBasket($dto);
+        $result = $service->createFromBasket($dto, 10, 's1');
 
         $this->assertFalse($result->isSuccess());
     }
@@ -94,8 +92,6 @@ class OrderServiceTest extends TestCase
     public function testCreateOrderFailsOnMissingPhone(): void
     {
         $dto = new OrderCreateDTO(
-            userId: 10,
-            siteId: 's1',
             personTypeId: 1,
             deliveryServiceId: 2,
             paySystemId: 3,
@@ -119,7 +115,7 @@ class OrderServiceTest extends TestCase
 
         $service = new OrderService($gatewayMock, $eventDispatcherMock);
 
-        $result = $service->createFromBasket($dto);
+        $result = $service->createFromBasket($dto, 10, 's1');
 
         $this->assertFalse($result->isSuccess());
     }

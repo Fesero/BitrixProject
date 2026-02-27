@@ -18,7 +18,7 @@ class OrderService
     ) {
     }
 
-    public function createFromBasket(OrderCreateDTO $dto): Result
+    public function createFromBasket(OrderCreateDTO $dto, int $userId, string $siteId): Result
     {
         $validationResult = $this->validateDto($dto);
 
@@ -26,7 +26,7 @@ class OrderService
             return $validationResult;
         }
 
-        $gatewayResult = $this->gateway->createFromBasket($dto);
+        $gatewayResult = $this->gateway->createFromBasket($dto, $userId, $siteId);
 
         if (!$gatewayResult->isSuccess()) {
             return $gatewayResult;
@@ -61,14 +61,6 @@ class OrderService
     private function validateDto(OrderCreateDTO $dto): Result
     {
         $result = new Result();
-
-        if ($dto->userId <= 0) {
-            $result->addError(new Error('User ID must be greater than 0', 'INVALID_USER_ID'));
-        }
-
-        if ($dto->siteId === '') {
-            $result->addError(new Error('Site ID is required', 'INVALID_SITE_ID'));
-        }
 
         if ($dto->personTypeId <= 0) {
             $result->addError(new Error('Person type ID must be greater than 0', 'INVALID_PERSON_TYPE_ID'));

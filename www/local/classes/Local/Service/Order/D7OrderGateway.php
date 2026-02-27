@@ -19,18 +19,18 @@ class D7OrderGateway implements OrderGatewayInterface
         Loader::includeModule('catalog');
     }
 
-    public function createFromBasket(OrderCreateDTO $dto): Result
+    public function createFromBasket(OrderCreateDTO $dto, int $userId, string $siteId): Result
     {
         $result = new Result();
 
-        $basket = $this->loadBasket($dto->siteId, $dto->userId);
+        $basket = $this->loadBasket($siteId, $userId);
 
         if ($basket === null || $basket->isEmpty()) {
             $result->addError(new Error('Basket is empty', 'BASKET_EMPTY'));
             return $result;
         }
 
-        $order = Sale\Order::create($dto->siteId, $dto->userId);
+        $order = Sale\Order::create($siteId, $userId);
         $order->setPersonTypeId($dto->personTypeId);
         $order->setField('CURRENCY', $dto->currency);
         $order->setBasket($basket);
