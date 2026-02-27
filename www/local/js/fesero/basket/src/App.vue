@@ -1,6 +1,5 @@
 <template>
   <div class="bx-basket-wrapper" v-click-outside="closeBasket">
-    <!-- Кнопка-триггер: только она влияет на размер шапки -->
     <div class="bx-basket-trigger" @click="toggleBasket" :class="{ 'is-active': isOpen }">
       <div class="trigger-icon">
         <span class="badge" v-if="store.totalCount > 0">{{ store.totalCount }}</span>
@@ -16,7 +15,6 @@
       </div>
     </div>
 
-    <!-- Выпадающая панель: Position Absolute -->
     <transition name="dropdown-anime">
       <div v-if="isOpen" class="bx-basket-dropdown">
         <header class="dropdown-header">
@@ -48,7 +46,17 @@
             <strong>{{ formatPrice(store.totalPrice) }}</strong>
           </div>
           <a href="/personal/cart" class="btn-go-to-cart">Перейти в корзину</a>
-          <button class="btn-checkout-fast">Быстрый заказ</button>
+          <button 
+            class="btn-checkout-fast" 
+            @click="openCheckout"
+            :disabled="!store.hasItems"
+          >
+            Оформить заказ
+          </button>
+          <CheckoutForm 
+            v-if="showCheckout"
+            @close="closeCheckout"
+          />
         </footer>
       </div>
     </transition>
@@ -58,6 +66,7 @@
 <script setup>
   import { ref } from 'vue';
   import { useBasketStore } from './stores/basket';
+  import CheckoutForm from './components/CheckoutForm.vue';
   
   const store = useBasketStore();
 
@@ -66,6 +75,7 @@
   store.initGlobalListeners();
 
   const isOpen = ref(false);
+  const showCheckout = ref(false);
   
   const toggleBasket = () => {
     isOpen.value = !isOpen.value;
@@ -73,6 +83,15 @@
   
   const closeBasket = () => {
     isOpen.value = false;
+  };
+
+  const openCheckout = () => {
+    isOpen.value = false;
+    showCheckout.value = true;
+  };
+
+  const closeCheckout = () => {
+      showCheckout.value = false;
   };
   
   const vClickOutside = {

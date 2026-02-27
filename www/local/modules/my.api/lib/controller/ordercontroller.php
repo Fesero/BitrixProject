@@ -12,6 +12,7 @@ use Bitrix\Main\Error;
 use Bitrix\Main\HttpRequest;
 use Local\DTO\OrderCreateDTO;
 use Local\Service\OrderService;
+use Bitrix\Main\Engine\CurrentUser;
 
 class OrderController extends Controller
 {
@@ -59,8 +60,11 @@ class OrderController extends Controller
             return null;
         }
 
+        $userId = (int) CurrentUser::get()->getId();
+        $siteId = Context::getCurrent()->getSite();
+
         $service = $this->getOrderService();
-        $result = $service->createFromBasket($dto);
+        $result = $service->createFromBasket($dto, $userId, $siteId);
 
         if (!$result->isSuccess()) {
             $this->addErrors($result->getErrors());

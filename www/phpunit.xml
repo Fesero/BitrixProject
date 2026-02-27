@@ -5,4 +5,9 @@
             <directory>local/tests/Unit</directory>
         </testsuite>
     </testsuites>
+    <source>
+        <include>
+            <directory>local/classes</directory>
+        </include>
+    </source>
 </phpunit>

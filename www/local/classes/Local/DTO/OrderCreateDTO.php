@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace Local\DTO;
 
-use InvalidArgumentException;
-
 readonly class OrderCreateDTO
 {
     /**
-     * @param int $userId
-     * @param string $siteId
      * @param int $personTypeId
      * @param int $deliveryServiceId
      * @param int $paySystemId
@@ -20,8 +16,6 @@ readonly class OrderCreateDTO
      * @param string $currency
      */
     public function __construct(
-        public int $userId,
-        public string $siteId,
         public int $personTypeId,
         public int $deliveryServiceId,
         public int $paySystemId,
@@ -37,11 +31,6 @@ readonly class OrderCreateDTO
      */
     public static function fromArray(array $payload): self
     {
-        $userId = (int)($payload['userId'] ?? $payload['USER_ID'] ?? 0);
-
-        $rawSiteId = $payload['siteId'] ?? $payload['SITE_ID'] ?? '';
-        $siteId = \is_scalar($rawSiteId) ? (string)$rawSiteId : '';
-
         $personTypeId = (int)($payload['personTypeId'] ?? $payload['PERSON_TYPE_ID'] ?? 0);
         $deliveryServiceId = (int)($payload['deliveryServiceId'] ?? $payload['DELIVERY_SERVICE_ID'] ?? 0);
         $paySystemId = (int)($payload['paySystemId'] ?? $payload['PAY_SYSTEM_ID'] ?? 0);
@@ -58,13 +47,7 @@ readonly class OrderCreateDTO
         $rawCurrency = $payload['currency'] ?? $payload['CURRENCY'] ?? 'RUB';
         $currency = \is_scalar($rawCurrency) ? (string)$rawCurrency : 'RUB';
 
-        if ($userId <= 0 || $siteId === '' || $personTypeId <= 0) {
-            throw new InvalidArgumentException('Invalid order payload: userId/siteId/personTypeId are required');
-        }
-
         return new self(
-            $userId,
-            $siteId,
             $personTypeId,
             $deliveryServiceId,
             $paySystemId,

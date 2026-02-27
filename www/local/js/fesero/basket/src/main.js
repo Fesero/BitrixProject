@@ -39,5 +39,3 @@ if (document.readyState === 'loading') {
 } else {
     AppManager.init();
 }
-
-AppManager.init();
