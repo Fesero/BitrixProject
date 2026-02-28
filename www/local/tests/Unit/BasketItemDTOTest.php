@@ -7,9 +7,20 @@ use Local\DTO\BasketItemDTO;
 
 class BasketItemDTOTest extends TestCase
 {
-    private function createBasketItemDTO(): BasketItemDTO
+    private function createBasketItemDTO(?string $image = null): BasketItemDTO
     {
-        return new BasketItemDTO(1, 2, 'test', 1000, 'RUB', 1000, 'RUB', 5);
+        return new BasketItemDTO(
+            id: 1,
+            productId: 2,
+            name: 'Тестовый товар',
+            price: 1000.0,
+            formattedPrice: '1 000 ₽',
+            sum: 2000.0,
+            formattedSum: '2 000 ₽',
+            quantity: 2,
+            image: $image,
+            detailUrl: '/catalog/tovar/',
+        );
     }
 
     public function testConstructorFields(): void
@@ -18,14 +29,14 @@ class BasketItemDTOTest extends TestCase
 
         $this->assertSame(1, $dto->id);
         $this->assertSame(2, $dto->productId);
-        $this->assertSame('test', $dto->name);
+        $this->assertSame('Тестовый товар', $dto->name);
         $this->assertSame(1000.0, $dto->price);
-        $this->assertSame('RUB', $dto->formattedPrice);
-        $this->assertSame(1000.0, $dto->sum);
-        $this->assertSame('RUB', $dto->formattedSum);
-        $this->assertSame(5, $dto->quantity);
+        $this->assertSame('1 000 ₽', $dto->formattedPrice);
+        $this->assertSame(2000.0, $dto->sum);
+        $this->assertSame('2 000 ₽', $dto->formattedSum);
+        $this->assertSame(2, $dto->quantity);
         $this->assertNull($dto->image);
-        $this->assertEmpty($dto->detailUrl);
+        $this->assertSame('/catalog/tovar/', $dto->detailUrl);
     }
 
     public function testJsonSerialize(): void
@@ -36,13 +47,39 @@ class BasketItemDTOTest extends TestCase
 
         $this->assertSame(1, $json['id']);
         $this->assertSame(2, $json['productId']);
-        $this->assertSame('test', $json['name']);
+        $this->assertSame('Тестовый товар', $json['name']);
         $this->assertSame(1000.0, $json['price']);
-        $this->assertSame('RUB', $json['formattedPrice']);
-        $this->assertSame(1000.0, $json['sum']);
-        $this->assertSame('RUB', $json['formattedSum']);
-        $this->assertSame(5, $json['quantity']);
+        $this->assertSame('1 000 ₽', $json['formattedPrice']);
+        $this->assertSame(2000.0, $json['sum']);
+        $this->assertSame('2 000 ₽', $json['formattedSum']);
+        $this->assertSame(2, $json['quantity']);
         $this->assertNull($json['image']);
-        $this->assertEmpty($json['detailUrl']);
+        $this->assertSame('/catalog/tovar/', $json['detailUrl']);
+    }
+
+    public function testImageCanBeSet(): void
+    {
+        $dto = $this->createBasketItemDTO('/upload/iblock/img.jpg');
+        $this->assertSame('/upload/iblock/img.jpg', $dto->image);
+        $this->assertSame('/upload/iblock/img.jpg', $dto->jsonSerialize()['image']);
+    }
+
+    public function testJsonEncodeRoundTrip(): void
+    {
+        $dto = $this->createBasketItemDTO();
+        $json = json_encode($dto);
+        $decoded = json_decode($json, true);
+
+        $this->assertSame(1, $decoded['id']);
+        $this->assertSame('1 000 ₽', $decoded['formattedPrice']);
+        $this->assertSame(2, $decoded['quantity']);
+    }
+
+    public function testDtoIsReadonly(): void
+    {
+        $this->expectException(\Error::class);
+        $dto = $this->createBasketItemDTO();
+        /** @phpstan-ignore-next-line */
+        $dto->price = 999.0;
     }
 }
