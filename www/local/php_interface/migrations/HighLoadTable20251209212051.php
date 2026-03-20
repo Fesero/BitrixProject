@@ -2,7 +2,7 @@
 
 namespace Sprint\Migration;
 
-use Local\Model\RequestTable;
+use Local\Infrastructure\ORM\RequestTable;
 use Bitrix\Main\Application;
 
 class HighLoadTable20251209212051 extends Version

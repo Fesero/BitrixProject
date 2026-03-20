@@ -7,7 +7,8 @@ namespace My\Api\Controller;
 use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Engine\ActionFilter;
 use Bitrix\Main\Error;
-use Local\Service\BasketService;
+use Local\Application\Service\BasketService;
+use Bitrix\Main\DI\ServiceLocator;
 
 class BasketController extends Controller
 {
@@ -45,7 +46,7 @@ class BasketController extends Controller
             return null;
         }
 
-        $service = new BasketService();
+        $service = $this->getBasketService();
         $result = $service->addToBasket($productId, $quantity);
 
         if (!$result->isSuccess()) {
@@ -59,7 +60,7 @@ class BasketController extends Controller
 
     public function getAction(): mixed
     {
-        $service = new BasketService();
+        $service = $this->getBasketService();
         $result = $service->getBasketData();
 
         if (!$result->isSuccess()) {
@@ -72,7 +73,7 @@ class BasketController extends Controller
 
     public function updateAction(int $productId, float $quantity): mixed
     {
-        $service = new BasketService();
+        $service = $this->getBasketService();
         $result = $service->updateItemQuantity($productId, $quantity);
 
         if (!$result->isSuccess()) {
@@ -85,7 +86,7 @@ class BasketController extends Controller
 
     public function deleteAction(int $productId): mixed
     {
-        $service = new BasketService();
+        $service = $this->getBasketService();
         $result = $service->deleteItem($productId);
 
         if (!$result->isSuccess()) {
@@ -94,5 +95,16 @@ class BasketController extends Controller
         }
 
         return $result->getData()['basket'];
+    }
+
+    private function getBasketService(): BasketService
+    {
+        $service = ServiceLocator::getInstance()->get(BasketService::class);
+
+        if (!$service instanceof BasketService) {
+            throw new \RuntimeException('BasketService not found in ServiceLocator');
+        }
+
+        return $service;
     }
 }

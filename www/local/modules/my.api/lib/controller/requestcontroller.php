@@ -6,8 +6,8 @@ use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Engine\ActionFilter;
 use Bitrix\Main\DI\ServiceLocator;
 use Bitrix\Main\Error;
-use Local\DTO\RequestDTO;
-use Local\Service\RequestService;
+use Local\Application\DTO\RequestDTO;
+use Local\Application\Service\RequestService;
 
 class RequestController extends Controller
 {

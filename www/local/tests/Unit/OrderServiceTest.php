@@ -2,10 +2,10 @@
 
 use PHPUnit\Framework\TestCase;
 use Bitrix\Main\Result;
-use Local\DTO\OrderCreateDTO;
-use Local\Service\Event\EventDispatcherInterface;
-use Local\Service\OrderService;
-use Local\Service\Order\OrderGatewayInterface;
+use Local\Application\DTO\OrderCreateDTO;
+use Local\Application\Port\Out\EventDispatcherInterface;
+use Local\Application\Service\OrderService;
+use Local\Application\Port\Out\OrderGatewayInterface;
 
 class OrderServiceTest extends TestCase
 {

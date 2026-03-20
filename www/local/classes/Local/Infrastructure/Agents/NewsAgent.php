@@ -1,0 +1,43 @@
+<?php
+
+namespace Local\Infrastructure\Agents;
+
+use Bitrix\Iblock\Elements\ElementNewsTable;
+use Bitrix\Main\Loader;
+use Bitrix\Main\Type\DateTime;
+
+class NewsAgent
+{
+    public static function deactivateOldNews(): string|null
+    {
+        if (!Loader::IncludeModule('iblock')) {
+            return null;
+        }
+
+        $date = new DateTime();
+        $date->add('-30 day');
+
+        $news = ElementNewsTable::getList([
+            'select' => ['ID'],
+            'filter' => [
+                'ACTIVE' => 'Y',
+                '<=ACTIVE_FROM' => $date,
+            ]
+            ]);
+
+        while ($item = $news->fetchObject()) {
+            /** @var \Bitrix\Iblock\Elements\ElementNews $item */
+            $item->setActive('N');
+
+            $result = $item->save();
+
+            if ($result->isSuccess()) {
+                echo "Объект успешно сохранен!";
+            } else {
+                print_r($result->getErrorMessages());
+            }
+        }
+
+        return "\Local\Infrastructure\Agents\NewsAgent::deactivateOldNews();";
+    }
+}

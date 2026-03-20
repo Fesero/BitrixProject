@@ -10,8 +10,8 @@ use Bitrix\Main\Engine\ActionFilter;
 use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Error;
 use Bitrix\Main\HttpRequest;
-use Local\DTO\OrderCreateDTO;
-use Local\Service\OrderService;
+use Local\Application\DTO\OrderCreateDTO;
+use Local\Application\Service\OrderService;
 use Bitrix\Main\Engine\CurrentUser;
 
 class OrderController extends Controller
