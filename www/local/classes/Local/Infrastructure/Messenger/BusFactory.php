@@ -6,7 +6,7 @@ namespace Local\Infrastructure\Messenger;
 
 use Local\Application\Message\SendWebhook;
 use Local\Application\MessageHandler\SendWebhookHandler;
-use Bitrix\Main\DI\ServiceLocator;
+use Local\Infrastructure\DI\Container;
 use Symfony\Component\Messenger\Handler\HandlersLocator;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\Middleware\HandleMessageMiddleware;
@@ -66,7 +66,7 @@ class BusFactory
         /**
          * @var SendWebhookHandler $sendWebhookHandler
          */
-        $sendWebhookHandler = ServiceLocator::getInstance()->get(SendWebhookHandler::class);
+        $sendWebhookHandler = Container::getInstance()->get(SendWebhookHandler::class);
 
         $handlersLocator = new HandlersLocator([
             SendWebhook::class => [$sendWebhookHandler],

@@ -8,7 +8,7 @@ use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Engine\ActionFilter;
 use Bitrix\Main\Error;
 use Local\Application\Service\BasketService;
-use Bitrix\Main\DI\ServiceLocator;
+use Local\Infrastructure\DI\Container;
 
 class BasketController extends Controller
 {
@@ -99,10 +99,10 @@ class BasketController extends Controller
 
     private function getBasketService(): BasketService
     {
-        $service = ServiceLocator::getInstance()->get(BasketService::class);
+        $service = Container::getInstance()->get(BasketService::class);
 
         if (!$service instanceof BasketService) {
-            throw new \RuntimeException('BasketService not found in ServiceLocator');
+            throw new \RuntimeException('BasketService not found');
         }
 
         return $service;

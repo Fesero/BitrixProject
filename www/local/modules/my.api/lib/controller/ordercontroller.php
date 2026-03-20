@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace My\Api\Controller;
 
 use Bitrix\Main\Context;
-use Bitrix\Main\DI\ServiceLocator;
 use Bitrix\Main\Engine\ActionFilter;
 use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Error;
 use Bitrix\Main\HttpRequest;
 use Local\Application\DTO\OrderCreateDTO;
 use Local\Application\Service\OrderService;
+use Local\Infrastructure\DI\Container;
 use Bitrix\Main\Engine\CurrentUser;
 
 class OrderController extends Controller
@@ -79,10 +79,10 @@ class OrderController extends Controller
 
     private function getOrderService(): OrderService
     {
-        $service = ServiceLocator::getInstance()->get(OrderService::class);
+        $service = Container::getInstance()->get(OrderService::class);
 
         if (!$service instanceof OrderService) {
-            throw new \RuntimeException('OrderService not found in ServiceLocator');
+            throw new \RuntimeException('OrderService not found');
         }
 
         return $service;
