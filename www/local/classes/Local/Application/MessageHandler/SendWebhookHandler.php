@@ -4,20 +4,24 @@ declare(strict_types=1);
 
 namespace Local\Application\MessageHandler;
 
-use Exception;
 use Local\Application\Message\SendWebhook;
 use Local\Application\Service\NotificationService;
-use Local\Infrastructure\ORM\RequestTable;
-use Bitrix\Main\DI\ServiceLocator;
+use Local\Application\Port\Out\RequestRepositoryInterface;
 
 class SendWebhookHandler
 {
+    public function __construct(
+        private readonly NotificationService $notificationService,
+        private readonly RequestRepositoryInterface $requestRepositoryInterface
+    ) {
+    }
+
     public function __invoke(SendWebhook $message): void
     {
         echo sprintf("[%s] Processing Webhook for Request ID: %d ... ", date('H:i:s'), $message->requestId);
 
         try {
-            $request = RequestTable::getByPrimary($message->requestId)->fetch();
+            $request = $this->requestRepositoryInterface->findById($message->requestId);
 
             if (!$request) {
                 echo "ERROR: Request not found in DB.\n";
@@ -36,8 +40,7 @@ class SendWebhookHandler
                 'source' => 'async_worker'
             ];
 
-            $service = $this->getNotificationService();
-            $success = $service->sendWebhook($crmPayload);
+            $success = $this->notificationService->sendWebhook($crmPayload);
 
             if ($success) {
                 echo "SUCCESS (Sent)\n";
@@ -47,16 +50,5 @@ class SendWebhookHandler
         } catch (\Throwable $e) {
             echo "CRITICAL ERROR: " . $e->getMessage() . "\n";
         }
-    }
-
-    private function getNotificationService(): NotificationService
-    {
-        $service = ServiceLocator::getInstance()->get(NotificationService::class);
-
-        if (!$service instanceof NotificationService) {
-            throw new Exception("NotificationService not found in ServiceLocator");
-        }
-
-        return $service;
     }
 }

@@ -6,7 +6,7 @@ namespace Local\Infrastructure\EventHandler;
 
 use Bitrix\Main\Event;
 use Local\Application\Message\SendWebhook;
-use Local\Infrastructure\Messanger\BusFactory;
+use Local\Infrastructure\Messenger\BusFactory;
 
 class RequestEventHandler
 {
