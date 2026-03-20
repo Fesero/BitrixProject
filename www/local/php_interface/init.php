@@ -15,11 +15,11 @@ $eventManager = EventManager::getInstance();
 $eventManager->addEventHandler(
     'iblock',
     'OnAfterIBlockElementAdd',
-    ['Local\Events\LogsElementAdd', 'handleNews'],
+    [Local\Infrastructure\EventHandler\LogsElementAdd::class, 'handleNews'],
 );
 
 $eventManager->addEventHandler(
     'local',
     'OnAfterRequestAdd',
-    [Local\Events\RequestEventHandler::class, 'onAdd']
+    [Local\Infrastructure\EventHandler\RequestEventHandler::class, 'onAdd']
 );

@@ -3,7 +3,7 @@
 namespace Sprint\Migration;
 
 use Bitrix\Main\Application;
-use Local\Model\RequestTable;
+use Local\Infrastructure\ORM\RequestTable;
 
 class Version20251212000000 extends Version
 {

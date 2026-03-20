@@ -4,10 +4,10 @@ namespace My\Api\Controller;
 
 use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Engine\ActionFilter;
-use Bitrix\Main\DI\ServiceLocator;
 use Bitrix\Main\Error;
-use Local\DTO\RequestDTO;
-use Local\Service\RequestService;
+use Local\Application\DTO\RequestDTO;
+use Local\Application\Service\RequestService;
+use Local\Infrastructure\DI\Container;
 
 class RequestController extends Controller
 {
@@ -92,10 +92,10 @@ class RequestController extends Controller
 
     private function getRequestService(): RequestService
     {
-        $service = ServiceLocator::getInstance()->get(RequestService::class);
+        $service = Container::getInstance()->get(RequestService::class);
 
         if (!$service instanceof RequestService) {
-            throw new \RuntimeException('RequestService not found in ServiceLocator');
+            throw new \RuntimeException('RequestService not found');
         }
 
         return $service;

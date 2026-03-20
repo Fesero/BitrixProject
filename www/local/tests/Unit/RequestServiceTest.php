@@ -1,10 +1,10 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Local\Service\RequestService;
-use Local\Repository\RequestRepositoryInterface;
-use Local\Service\Event\EventDispatcherInterface;
-use Local\DTO\RequestDTO;
+use Local\Application\Service\RequestService;
+use Local\Application\Port\Out\RequestRepositoryInterface;
+use Local\Application\Port\Out\EventDispatcherInterface;
+use Local\Application\DTO\RequestDTO;
 
 class RequestServiceTest extends TestCase
 {
