@@ -2,12 +2,16 @@
 
 namespace Local\Application\Service;
 
-use Bitrix\Main\Web\HttpClient;
-use Bitrix\Main\Web\Json;
+use Local\Application\Port\Out\HttpClientPort;
 
 class NotificationService
 {
     private const WEBHOOK_URL = 'https://webhook.site/c472902a-e2ce-4878-9cbd-72d1c98a22ae';
+
+    public function __construct(
+        private readonly HttpClientPort $httpClientPort,
+    ) {
+    }
 
     /**
      * @param array<string, mixed> $payload
@@ -15,30 +19,6 @@ class NotificationService
      */
     public function sendWebhook(array $payload): bool
     {
-        $httpClient = new HttpClient([
-            'socketTimeout' => 5, // Ждем соединения 5 сек
-            'streamTimeout' => 5, // Ждем ответа 5 сек
-        ]);
-
-        $httpClient->setHeader('Content-Type', 'application/json');
-
-        try {
-            /**
-             * @var array<string, mixed>|string|resource|null
-             */
-            $jsonData = Json::encode($payload);
-
-            $result = $httpClient->post(self::WEBHOOK_URL, $jsonData);
-
-            $status = $httpClient->getStatus();
-
-            if ($status === 200) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (\Exception $e) {
-            return false;
-        }
+        return $this->httpClientPort->postJson(self::WEBHOOK_URL, $payload);
     }
 }

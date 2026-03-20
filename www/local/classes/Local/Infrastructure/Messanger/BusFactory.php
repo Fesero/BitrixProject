@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Local\Application\Service;
+namespace Local\Infrastructure\Messanger;
 
 use Local\Application\Message\SendWebhook;
 use Local\Application\MessageHandler\SendWebhookHandler;

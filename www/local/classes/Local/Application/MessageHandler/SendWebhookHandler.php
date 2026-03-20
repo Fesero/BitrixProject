@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Local\Application\MessageHandler;
 
+use Exception;
 use Local\Application\Message\SendWebhook;
 use Local\Application\Service\NotificationService;
 use Local\Infrastructure\ORM\RequestTable;
+use Bitrix\Main\DI\ServiceLocator;
 
 class SendWebhookHandler
 {
@@ -34,7 +36,7 @@ class SendWebhookHandler
                 'source' => 'async_worker'
             ];
 
-            $service = new NotificationService();
+            $service = $this->getNotificationService();
             $success = $service->sendWebhook($crmPayload);
 
             if ($success) {
@@ -45,5 +47,16 @@ class SendWebhookHandler
         } catch (\Throwable $e) {
             echo "CRITICAL ERROR: " . $e->getMessage() . "\n";
         }
+    }
+
+    private function getNotificationService(): NotificationService
+    {
+        $service = ServiceLocator::getInstance()->get(NotificationService::class);
+
+        if (!$service instanceof NotificationService) {
+            throw new Exception("NotificationService not found in ServiceLocator");
+        }
+
+        return $service;
     }
 }

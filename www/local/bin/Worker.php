@@ -15,7 +15,7 @@ require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.
 require $_SERVER["DOCUMENT_ROOT"] . '/vendor/autoload.php';
 
 use Symfony\Component\Messenger\Worker;
-use Local\Application\Service\BusFactory;
+use Local\Infrastructure\Messanger\BusFactory;
 
 echo "========================================\n";
 echo "🚀 WORKER STARTED [Environment: Bitrix]\n";
