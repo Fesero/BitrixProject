@@ -1,46 +1,8 @@
-<?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
-$aMenuLinks = Array(
-	Array(
-		"Как купить", 
-		"about/howto/", 
-		Array(), 
-		Array(), 
-		"" 
-	),
-	Array(
-		"Доставка", 
-		"about/delivery/", 
-		Array(), 
-		Array(), 
-		"" 
-	),
-	Array(
-		"О магазине", 
-		"about/", 
-		Array(), 
-		Array(), 
-		"" 
-	),	
-	Array(
-		"Гарантия", 
-		"about/guaranty/", 
-		Array(), 
-		Array(), 
-		"" 
-	),
-	Array(
-		"Контакты",
-		"about/contacts/",
-		Array(),
-		Array(),
-		""
-	),
-	Array(
-		"Мой кабинет",
-		"personal/",
-		Array(),
-		Array(),
-		"\$USER->IsAuthorized()"
-	),
-);
-?>
+<?php
+$aMenuLinks = [
+    ['Catalog', SITE_DIR . 'catalog/', [], [], ''],
+    ['New Arrivals', SITE_DIR . 'new-arrivals/', [], [], ''],
+    ['Sale', SITE_DIR . 'sale/', [], [], ''],
+    ['About Us', SITE_DIR . 'about/', [], [], ''],
+    ['Contacts', SITE_DIR . 'contacts/', [], [], ''],
+];
